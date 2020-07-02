@@ -1,0 +1,334 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Intune Enrollment Activity"
+      },
+      "name": "text - 0"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Parameters"
+      },
+      "name": "text - 1"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "a818bb60-9a8a-4c44-80ae-b846beec63b6",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 259200000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 1800000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 3600000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 14400000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 43200000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 86400000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 172800000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 259200000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 604800000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 1209600000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 2592000000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 5184000000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                },
+                {
+                  "durationMs": 7776000000,
+                  "createdTime": "2019-03-04T13:47:02.390Z",
+                  "isInitialTime": false,
+                  "grain": 1,
+                  "useDashboardTimeRange": false
+                }
+              ],
+              "allowCustom": true
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "name": "parameters - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Events Trend"
+      },
+      "name": "text - 3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where OperationName==\"Enrollment\"\r\n| summarize OperationCount=count() by bin(TimeGenerated, {TimeRange:grain})",
+        "size": 1,
+        "aggregation": 1,
+        "showAnnotations": true,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "linechart"
+      },
+      "name": "query - 4"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Statistics"
+      },
+      "customWidth": "50",
+      "name": "text - 5"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Success by Enrollment Type"
+      },
+      "customWidth": "50",
+      "name": "text - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where  OperationName == \"Enrollment\"\r\n| summarize count() by Result\r\n",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "customWidth": "50",
+      "name": "query - 7"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where  OperationName == \"Enrollment\" \r\n| where Result == \"Success\" \r\n| extend myJson=todynamic(Properties)\r\n| extend EnrollmentType = tostring(myJson [\"EnrollmentType\"])\r\n| summarize OperationCount=count() by EnrollmentType \r\n| sort by OperationCount desc",
+        "size": 1,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "OperationCount",
+              "formatter": 3,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "query - 8"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Enrollment Failures"
+      },
+      "name": "text - 9"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Failure reasons"
+      },
+      "customWidth": "50",
+      "name": "text - 10"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Failures by Platform"
+      },
+      "customWidth": "50",
+      "name": "text - 11"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where  OperationName == \"Enrollment\" \r\n| where Result == \"Fail\"\r\n| extend myJson=todynamic(Properties)\r\n| extend FailureReason = tostring(myJson [\"FailureReason\"])\r\n| summarize OperationCount=count() by FailureReason\r\n| sort by OperationCount desc",
+        "size": 1,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "OperationCount",
+              "formatter": 3,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "query - 12"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where  OperationName == \"Enrollment\" \r\n| where Result == \"Fail\"\r\n| extend myJson=todynamic(Properties)\r\n| extend Platform = tostring(myJson [\"Os\"])\r\n| summarize OperationCount=count() by Platform \r\n| sort by OperationCount desc",
+        "size": 1,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "OperationCount",
+              "formatter": 3,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        }
+      },
+      "customWidth": "50",
+      "name": "query - 13"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Enrollment Failures by Enrollment Type"
+      },
+      "name": "text - 14"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "IntuneOperationalLogs\r\n| where  OperationName == \"Enrollment\" \r\n| where Result == \"Fail\" \r\n| extend myJson=todynamic(Properties)\r\n| extend EnrollmentType = tostring(myJson [\"EnrollmentType\"])\r\n| summarize OperationCount=count() by EnrollmentType \r\n| sort by OperationCount desc",
+        "size": 1,
+        "timeContext": {
+          "durationMs": 259200000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "OperationCount",
+              "formatter": 3,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        }
+      },
+      "name": "query - 15"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/e6799fb8-c1f1-412b-a8d0-e58131aeacbc/resourcegroups/6mdmazuresentinel/providers/microsoft.operationalinsights/workspaces/6mdmazuresentinele"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
