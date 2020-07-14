@@ -1,0 +1,30 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## New workbook\n---\n\n<h1>MITRE ATT&CK Framework Reference for Azure Sentinel</h1>"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "<img src=\"https://github.com/rod-trent/AzureSentinelMisc/blob/master/mitretimeline.jpg?raw=true\" alt=\"MITRE ATT&CK Timeline\">\r\n<h2><p style=\"color:gray;\">Initial access</p>Techniques used by the adversary to obtain a foothold within a network, such as targeted spear-phishing, exploiting vulnerabilities or configuration weaknesses in public-facing systems.\r\n\r\n<p style=\"color:gray;\">Execution</p>Techniques that result in an adversary running their code on a target system. For example, an attacker may run a PowerShell script to download additional attacker tools and/or scan other systems.\r\n\r\n<p style=\"color:gray;\">Persistence</p>Techniques that allow an adversary to maintain access to a target system, even following reboots and credential changes. An example of a persistence technique would be an attacker creating a scheduled task that runs their code at a specific time or on reboot.\r\n\r\n<p style=\"color:gray;\">Privilege escalation</p>Techniques leveraged by an adversary to gain higher-level privileges on a system, such as local administrator or root.\r\n\r\n<p style=\"color:gray;\">Defense evasion</p>Techniques used by attackers to avoid detection. Evasion techniques include hiding malicious code within trusted processes and folders, encrypting or obfuscating adversary code, or disabling security software.\r\n\r\n<p style=\"color:gray;\">Credential access</p>Techniques deployed on systems and networks to steal usernames and credentials for re-use.\r\n\r\n<p style=\"color:gray;\">Discovery</p>Techniques used by adversaries to obtain information about systems and networks that they are looking to exploit or use for their tactical advantage.\r\n\r\n<p style=\"color:gray;\">Lateral movement</p>Techniques that allow an attacker to move from one system to another within a network. Common techniques include “Pass-the-Hash” methods of authenticating users and the abuse of the remote desktop protocol.\r\n\r\n<p style=\"color:gray;\">Collection</p>Techniques used by an adversary to gather and consolidate the information they were targeting as part of their objectives.\r\n\r\n<p style=\"color:gray;\">Command and control</p>Techniques leveraged by an attacker to communicate with a system under their control. One example is that an attacker may communicate with a system over an uncommon or high-numbered port to evade detection by security appliances or proxies.\r\n\r\n<p style=\"color:gray;\">Exfiltration</p>Techniques used to move data from the compromised network to a system or network fully under control of the attacker.\r\n\r\n<p style=\"color:gray;\">Impact</p>Techniques used by an attacker to impact the availability of systems, networks, and data. Methods in this category would include denial of service attacks and disk- or data-wiping software.\r\n</h2>",
+        "style": "info"
+      },
+      "customWidth": "80",
+      "name": "text - 2",
+      "styleSettings": {
+        "margin": "30px",
+        "showBorder": true
+      }
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/e6799fb8-c1f1-412b-a8d0-e58131aeacbc/resourcegroups/6mdmazuresentinel/providers/microsoft.operationalinsights/workspaces/6mdmazuresentinele"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

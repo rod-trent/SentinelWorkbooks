@@ -1,0 +1,43 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## New workbook\n---\n\n<h1>Intune/Endpoint Manager Device ID Reference - based on the Intune DeviceType Reference for Azure Sentinel KQL blog post.</h1>"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "paragraph",
+        "links": [
+          {
+            "cellValue": "https://secureinfra.blog/2020/07/13/intune-devicetype-reference-for-azure-sentinel-kql/",
+            "linkTarget": "Url",
+            "linkLabel": "Intune DeviceType Reference for Azure Sentinel KQL",
+            "preText": "Blog post: ",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "<table><thead><tr><th>DeviceType</th><th>Name</th><th>Description</th></tr></thead><tbody><tr><td>0</td><td>Desktop</td><td>Windows Desktop device</td></tr><tr><td>1</td><td>WindowsRT</td><td>WindowsRT device</td></tr><tr><td>2</td><td>WinMO6</td><td>Windows Mobile 6.0 device</td></tr><tr><td>3</td><td>Nokia</td><td>Nokia device</td></tr><tr><td>4</td><td>WindowsPhone</td><td>Windows Phone device</td></tr><tr><td>5</td><td>Mac</td><td>Mac device</td></tr><tr><td>6</td><td>WinCE</td><td>Windows CE device</td></tr><tr><td>7</td><td>WinEmbedded</td><td>Windows Embedded device</td></tr><tr><td>8</td><td>IPhone</td><td>iPhone device</td></tr><tr><td>9</td><td>IPad</td><td>iPad device</td></tr><tr><td>10</td><td>IPod</td><td>iPod device</td></tr><tr><td>11</td><td>Android</td><td>Android device-managed using Device Administrator</td></tr><tr><td>12</td><td>ISocConsumer</td><td>iSoc Consumer device</td></tr><tr><td>14</td><td>MacMDM</td><td>Mac OS X device managed with the built-in MDM agent</td></tr><tr><td>15</td><td>HoloLens</td><td>HoloLens device</td></tr><tr><td>16</td><td>SurfaceHub</td><td>Surface Hub device</td></tr><tr><td>17</td><td>AndroidForWork</td><td>Android device-managed using Android Profile Owner</td></tr><tr><td>100</td><td>Blackberry</td><td>Blackberry Device</td></tr><tr><td>101</td><td>Palm</td><td>Palm device</td></tr><tr><td>255</td><td>Unknown</td><td>Unknown device type</td></tr></tbody></table>",
+        "style": "info"
+      },
+      "customWidth": "50",
+      "name": "text - 2"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/e6799fb8-c1f1-412b-a8d0-e58131aeacbc/resourcegroups/6mdmazuresentinel/providers/microsoft.operationalinsights/workspaces/6mdmazuresentinele"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
