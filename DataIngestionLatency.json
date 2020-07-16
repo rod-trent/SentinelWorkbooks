@@ -1,0 +1,82 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## New workbook\n---\n\n<h1>Data Ingestion Latency Workbook</h1>\n\n\nThis Azure Sentinel Workbook provides a quick view into potential latency for the data being ingestion into the associated Log Analytics workspace."
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "<h2>Latency of ingestion to the Event table in the last 1 day</h2>",
+        "style": "info"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "// Ingestion latency (end-to-end) timechart - Event table \r\n// Chart the latency of ingestion to the Event table in the last 1 day. \r\nEvent\r\n| where TimeGenerated > ago(1d)\r\n| project TimeGenerated, IngestionDurationSeconds = (ingestion_time()-TimeGenerated)/1s\r\n| render timechart title = \"Ingestion latency: Event table\" ",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 1"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "<h2>Workspace ingestion volume of the last day</h2>",
+        "style": "info"
+      },
+      "name": "text - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "// Total workspace ingestion volume timechart, last day \r\n// Chart the workspace ingestion volume of the last day. \r\nunion *\r\n| where TimeGenerated > ago(1d)\r\n| summarize TotalVolumeGB = sum(_BilledSize)/1024/1024/1024 by bin(TimeGenerated,10m)\r\n| render timechart",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "<h2>Ingestion volume spikes in the last 24 hours (per Solution and data type)</h2>"
+      },
+      "name": "text - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "// Ingestion volume spikes - by Solution and data type \r\n// Check for ingestion volume spikes per Solution and data type, in the last 24 hour. \r\nlet StartTime = ago(24h);\r\nlet EndTime = now();\r\nlet MinRSquare =0.8; // Tune the sensitivity of the detection sensor\r\nUsage\r\n| where TimeGenerated between (StartTime .. EndTime)\r\n// Create a time series of data volume by solution and data type\r\n| make-series RatioSeries=sum(Quantity/1024) default=0 on TimeGenerated in range(StartTime, EndTime,10m) by Solution, DataType\r\n// Apply a 2-line regression to the time series\r\n| extend (RSquare2, SplitIdx, Variance2, RVariance2, LineFit2) = series_fit_2lines(RatioSeries)\r\n// Find out if our 2-line is trending up or down\r\n| extend (Slope, Interception, RSquare, Variance, RVariance, LineFit) = series_fit_line(LineFit2)\r\n// Check whether the line fit reaches the threshold\r\n| project Solution, DataType, Spike = iff(RSquare2 > MinRSquare and Slope != 0, \"Spike detected\", \"No spike\")",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 5"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/e6799fb8-c1f1-412b-a8d0-e58131aeacbc/resourcegroups/6mdmazuresentinel/providers/microsoft.operationalinsights/workspaces/6mdmazuresentinele"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
