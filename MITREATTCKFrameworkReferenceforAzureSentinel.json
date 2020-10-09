@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## New workbook\n---\n\n<h1>MITRE ATT&CK Framework Reference for Azure Sentinel</h1>"
+        "json": "<br>\r\n<h1>MITRE ATT&CK Framework Reference for Azure Sentinel</h1>"
       },
       "name": "text - 2"
     },
