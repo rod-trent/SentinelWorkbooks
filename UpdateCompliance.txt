@@ -1,0 +1,177 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "fe966609-9eb2-4e45-bc9f-1c13c8e8a4e2",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 172800000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          }
+        ],
+        "style": "above",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc ",
+        "size": 0,
+        "title": "Systems Needing Updates",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 2"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc \r\n| summarize count() by Computer",
+              "size": 0,
+              "title": "Systems Needing Updates Count",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "showBorder": false,
+                "titleContent": {
+                  "columnMatch": "Computer",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "count_",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "50",
+            "name": "query - 3"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc \r\n| summarize count() by Computer",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "customWidth": "50",
+            "name": "query - 4"
+          }
+        ]
+      },
+      "name": "Visual Group",
+      "styleSettings": {
+        "showBorder": true
+      }
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/2959f496-711b-447e-9b85-53a1da341c4c/resourcegroups/rodazuresentinel/providers/microsoft.operationalinsights/workspaces/rodazuresentinelworkspace"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
