@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Duckcreek - Storage Account Workbook\n---\n\nThis Workbook is designed to track Azure Storage Activity."
+        "json": "## Storage Account Workbook\n---\n\nThis Workbook is designed to track Azure Storage Activity."
       },
       "name": "text - 2"
     },
