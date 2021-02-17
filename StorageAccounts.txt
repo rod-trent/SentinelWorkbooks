@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Storage Account Workbook\n---\n\nThis Workbook is designed to track Azure Storage Activity."
+        "json": "## Duckcreek - Storage Account Workbook\n---\n\nThis Workbook is designed to track Azure Storage Activity."
       },
       "name": "text - 2"
     },
@@ -74,6 +74,19 @@
             "timeContext": {
               "durationMs": 86400000
             }
+          },
+          {
+            "id": "6ed47012-c97f-48cb-be23-d5197632ed3a",
+            "version": "KqlParameterItem/1.0",
+            "name": "Username",
+            "type": 2,
+            "query": "AzureActivity\r\n| extend User = tostring(Caller)\r\n| distinct User",
+            "value": "ab450fa1-7afd-4f39-8085-2b2207bd798b",
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
           }
         ],
         "style": "above",
@@ -86,17 +99,21 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AzureActivity\r\n| where TimeGenerated > ago(365d)\r\n| where ResourceProviderValue == \"MICROSOFT.STORAGE\"\r\n| distinct OperationNameValue",
+        "query": "AzureActivity\r\n| where TimeGenerated {TimeRange:query}\r\n| where ResourceProviderValue has \"MICROSOFT.STORAGE\"\r\n| extend ConnectedFrom = CallerIpAddress\r\n| extend UserAccount = Caller\r\n| summarize count() by OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| distinct OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| project TimeGenerated, OperationNameValue, UserAccount, ConnectedFrom",
         "size": 0,
         "showAnalytics": true,
         "title": "All Storage Account Activity",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "showExportToExcel": true,
         "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "rowLimit": 1000,
+          "filter": true
+        }
       },
       "name": "query - 2"
     },
@@ -104,12 +121,12 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AzureActivity\r\n| where ResourceProviderValue == \"MICROSOFT.STORAGE\"\r\n| where ActivityStatusValue == \"Failure\"\r\n| distinct OperationNameValue, TimeGenerated",
+        "query": "AzureActivity\r\n| where TimeGenerated {TimeRange:query}\r\n| where ResourceProviderValue == \"MICROSOFT.STORAGE\"\r\n| where ActivityStatusValue == \"Failure\"\r\n| extend ConnectedFrom = CallerIpAddress\r\n| extend UserAccount = Caller\r\n| distinct OperationNameValue, ActivitySubstatusValue, ConnectedFrom, UserAccount, TimeGenerated",
         "size": 0,
         "showAnalytics": true,
         "title": "Storage Activity Failures",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "showExportToExcel": true,
@@ -122,11 +139,11 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AzureActivity\r\n| where ResourceProviderValue == \"MICROSOFT.STORAGE\"\r\n| where ActivityStatusValue == \"Failure\"\r\n| distinct OperationNameValue, TimeGenerated\r\n| summarize count() by OperationNameValue, TimeGenerated ",
+        "query": "AzureActivity\r\n| where TimeGenerated {TimeRange:query}\r\n| where ResourceProviderValue == \"MICROSOFT.STORAGE\"\r\n| where ActivityStatusValue == \"Failure\"\r\n| distinct OperationNameValue, TimeGenerated\r\n| summarize count() by OperationNameValue, TimeGenerated ",
         "size": 0,
         "title": "Storage Account Failures by Time",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
