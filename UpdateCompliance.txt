@@ -20,7 +20,8 @@
             "type": 4,
             "isRequired": true,
             "value": {
-              "durationMs": 172800000
+              "durationMs": 12099600000,
+              "endTime": "2021-02-17T16:43:00.000Z"
             },
             "typeSettings": {
               "selectableValues": [
@@ -87,11 +88,11 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc ",
+        "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| where Title !has 'Antivirus'\r\n| where isnotempty(MSRCSeverity)\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID, MSRCSeverity, PublishedDate\r\n| sort by Computer asc ",
         "size": 0,
-        "title": "Systems Needing Updates",
+        "title": "Systems Needing Security Updates",
         "timeContext": {
-          "durationMs": 172800000
+          "durationMs": 12099600000
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
@@ -114,7 +115,7 @@
               "showAnalytics": true,
               "title": "Systems Needing Updates Count",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 12099600000
               },
               "timeContextFromParameter": "TimeRange",
               "showExportToExcel": true,
@@ -154,7 +155,7 @@
               "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc \r\n| summarize count() by Computer",
               "size": 0,
               "timeContext": {
-                "durationMs": 172800000
+                "durationMs": 12099600000
               },
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
