@@ -171,9 +171,6 @@
       "name": "query - 4"
     }
   ],
-  "fallbackResourceIds": [
-    "/subscriptions/2959f496-711b-447e-9b85-53a1da341c4c/resourcegroups/rodazuresentinel/providers/microsoft.operationalinsights/workspaces/rodazuresentinelworkspace"
-  ],
   "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
