@@ -79,7 +79,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
+        "json": "## Duckcreek - Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
       },
       "name": "text - 2"
     },
@@ -127,7 +127,7 @@
               "size": 0,
               "title": "View Updates Not Installed - by Update",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 7776000000
               },
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
@@ -147,7 +147,7 @@
         "size": 0,
         "title": "Systems Needing Security Updates",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
@@ -227,7 +227,7 @@
         "size": 0,
         "title": "Number of Updates Needed per System",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
@@ -262,13 +262,29 @@
         "size": 0,
         "title": "Client Update Troubleshooting Info",
         "timeContext": {
-          "durationMs": 0
+          "durationMs": 7776000000
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "query - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "UpdateSummary\r\n| where WSUSServer has \"Error#Patch\"\r\n| extend Reason = WSUSServer\r\n| distinct TimeGenerated, Computer, WSUSServer, Reason\r\n| project TimeGenerated, Computer, Reason",
+        "size": 0,
+        "title": "Systems that Failed to Connect to the Update Server",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 7"
     }
   ],
   "fallbackResourceIds": [
