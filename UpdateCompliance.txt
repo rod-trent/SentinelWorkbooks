@@ -2,13 +2,6 @@
   "version": "Notebook/1.0",
   "items": [
     {
-      "type": 1,
-      "content": {
-        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
-      },
-      "name": "text - 2"
-    },
-    {
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
@@ -20,8 +13,7 @@
             "type": 4,
             "isRequired": true,
             "value": {
-              "durationMs": 12099600000,
-              "endTime": "2021-02-17T16:43:00.000Z"
+              "durationMs": 7776000000
             },
             "typeSettings": {
               "selectableValues": [
@@ -85,6 +77,69 @@
       "name": "parameters - 1"
     },
     {
+      "type": 1,
+      "content": {
+        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "04d5bf2f-6aa6-48ae-ad5e-5c9f7636a2bb",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "KBIDs",
+                  "type": 2,
+                  "query": "Update\r\n| where isnotempty(KBID)\r\n| distinct KBID",
+                  "value": "4598459",
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange",
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| where Title !has 'Antivirus'\r\n| where isnotempty(MSRCSeverity)\r\n| where KBID == {KBIDs:query}\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| distinct KBID, Computer, OsVersion, UpdateState, Title, Classification, MSRCSeverity, PublishedDate\r\n| sort by Computer asc ",
+              "size": 0,
+              "title": "View Updates Not Installed - by Update",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 4"
+          }
+        ]
+      },
+      "name": "KBs"
+    },
+    {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
@@ -92,7 +147,7 @@
         "size": 0,
         "title": "Systems Needing Security Updates",
         "timeContext": {
-          "durationMs": 12099600000
+          "durationMs": 0
         },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
@@ -114,10 +169,6 @@
               "size": 0,
               "showAnalytics": true,
               "title": "Systems Needing Updates Count",
-              "timeContext": {
-                "durationMs": 12099600000
-              },
-              "timeContextFromParameter": "TimeRange",
               "showExportToExcel": true,
               "exportToExcelOptions": "all",
               "queryType": 0,
@@ -154,10 +205,6 @@
               "version": "KqlItem/1.0",
               "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct Computer, OsVersion, UpdateState, Title, Classification, KBID\r\n| sort by Computer asc \r\n| summarize count() by Computer",
               "size": 0,
-              "timeContext": {
-                "durationMs": 12099600000
-              },
-              "timeContextFromParameter": "TimeRange",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "visualization": "barchart"
@@ -171,6 +218,57 @@
       "styleSettings": {
         "showBorder": true
       }
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Update\r\n| join UpdateSummary on Computer\r\n| where UpdateState != 'Installed'\r\n| where Title !has 'Antivirus'\r\n| where isnotempty(MSRCSeverity)\r\n| extend Resource = Computer\r\n| extend IsUpdateNeeded = UpdateState\r\n| extend UpdateTitle = Title\r\n| extend UpdateType = Classification\r\n| extend KB = KBID\r\n| distinct KBID, Computer\r\n| summarize count() by KBID, Computer\r\n| extend NumberOfNeededUpdates = count_\r\n| project Computer, NumberOfNeededUpdates\r\n| sort by Computer asc ",
+        "size": 0,
+        "title": "Number of Updates Needed per System",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart",
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "Computer",
+            "formatter": 1
+          },
+          "centerContent": {
+            "columnMatch": "NumberOfNeededUpdates",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        }
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Update\r\n| join UpdateSummary on Computer\r\n| where isnotempty(WSUSServer)\r\n| where Title !has 'Antivirus'\r\n| distinct Computer, WSUSServer, WindowsUpdateAgentVersion, TimeGenerated",
+        "size": 0,
+        "title": "Client Update Troubleshooting Info",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 6"
     }
   ],
   "fallbackResourceIds": [
