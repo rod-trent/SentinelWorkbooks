@@ -81,7 +81,7 @@
             "name": "Username",
             "type": 2,
             "query": "AzureActivity\r\n| extend User = tostring(Caller)\r\n| distinct User",
-            "value": "ab450fa1-7afd-4f39-8085-2b2207bd798b",
+            "value": "rodtrent@sixmilliondollarman.onmicrosoft.com",
             "typeSettings": {
               "additionalResourceOptions": []
             },
@@ -99,7 +99,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AzureActivity\r\n| where TimeGenerated {TimeRange:query}\r\n| where ResourceProviderValue has \"MICROSOFT.STORAGE\"\r\n| extend ConnectedFrom = CallerIpAddress\r\n| extend UserAccount = Caller\r\n| summarize count() by OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| distinct OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| project TimeGenerated, OperationNameValue, UserAccount, ConnectedFrom",
+        "query": "AzureActivity\r\n| where TimeGenerated {TimeRange:query}\r\n| where ResourceProviderValue has \"MICROSOFT.STORAGE\"\r\n| extend ConnectedFrom = CallerIpAddress\r\n| extend UserAccount = Caller\r\n| summarize count() by OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| distinct OperationNameValue, UserAccount, ConnectedFrom, ResourceProviderValue, TimeGenerated\r\n| project TimeGenerated, OperationNameValue, UserAccount, ConnectedFrom\r\n| order by TimeGenerated desc",
         "size": 0,
         "showAnalytics": true,
         "title": "All Storage Account Activity",
