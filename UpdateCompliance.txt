@@ -79,7 +79,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Duckcreek - Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
+        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
       },
       "name": "text - 2"
     },
