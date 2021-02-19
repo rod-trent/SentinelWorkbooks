@@ -1,0 +1,185 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "fe966609-9eb2-4e45-bc9f-1c13c8e8a4e2",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 7776000000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          }
+        ],
+        "style": "above",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 1"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Key Management Workbook\n---\n\nThis Workbook is intended to report on Key Management."
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  AuditLogs\r\n  | where OperationName =~ \"Consent to application\" \r\n  | where Result =~ \"success\"\r\n  | mv-expand target = TargetResources\r\n  | extend targetResourceName = tostring(target.displayName)\r\n  | extend targetResourceID = tostring(target.id)\r\n  | extend targetResourceType = tostring(target.type)\r\n  | extend targetModifiedProp = TargetResources[0].modifiedProperties\r\n  | extend isAdminConsent = targetModifiedProp[0].newValue\r\n  | extend Consent_ServicePrincipalNames = targetModifiedProp[5].newValue\r\n  | extend Consent_Permissions = targetModifiedProp[4].newValue\r\n  | extend Consent_InitiatingUserOrApp = iff(isnotempty(InitiatedBy.user.userPrincipalName),tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\r\n  | extend Consent_InitiatingIpAddress = iff(isnotempty(InitiatedBy.user.ipAddress), tostring(InitiatedBy.user.ipAddress), tostring(InitiatedBy.app.ipAddress))\r\n  | join ( \r\n  AuditLogs  \r\n  | where OperationName =~ \"Add service principal credentials\"\r\n  | where Result =~ \"success\"\r\n  | mv-expand target = TargetResources\r\n  | extend targetResourceName = tostring(target.displayName)\r\n  | extend targetResourceID = tostring(target.id)\r\n  | extend targetModifiedProp = TargetResources[0].modifiedProperties\r\n  | extend Credential_KeyDescription = targetModifiedProp[0].newValue\r\n  | extend UpdatedProperties = targetModifiedProp[1].newValue\r\n  | extend Credential_ServicePrincipalNames = targetModifiedProp[2].newValue\r\n  | extend Credential_InitiatingUserOrApp = iff(isnotempty(InitiatedBy.user.userPrincipalName),tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\r\n  | extend Credential_InitiatingIpAddress = iff(isnotempty(InitiatedBy.user.ipAddress), tostring(InitiatedBy.user.ipAddress), tostring(InitiatedBy.app.ipAddress))\r\n  ) on targetResourceName, targetResourceID\r\n  | extend TimeConsent = TimeGenerated, TimeCred = TimeGenerated1\r\n  | where TimeConsent > TimeCred \r\n  | project TimeConsent, TimeCred, Consent_InitiatingUserOrApp, Credential_InitiatingUserOrApp, targetResourceName, targetResourceType, isAdminConsent, Consent_ServicePrincipalNames, Credential_ServicePrincipalNames, Consent_Permissions, Credential_KeyDescription, Consent_InitiatingIpAddress, Credential_InitiatingIpAddress\r\n  | extend timestamp = TimeConsent, AccountCustomEntity = Consent_InitiatingUserOrApp, IPCustomEntity = Consent_InitiatingIpAddress",
+        "size": 0,
+        "title": "Credential added after admin consented to Application",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  AuditLogs  \r\n  | where OperationName has_any (\"Add service principal\", \"Certificates and secrets management\") // captures \"Add service principal\", \"Add service principal credentials\", and \"Update application - Certificates and secrets management\" events\r\n  | where Result =~ \"success\"\r\n  | mv-expand target = TargetResources\r\n  | where tostring(InitiatedBy.user.userPrincipalName) has \"@\" or tostring(InitiatedBy.app.displayName) has \"@\"\r\n  | extend targetDisplayName = tostring(TargetResources[0].displayName)\r\n  | extend targetId = tostring(TargetResources[0].id)\r\n  | extend targetType = tostring(TargetResources[0].type)\r\n  | extend keyEvents = TargetResources[0].modifiedProperties\r\n  | mv-expand keyEvents\r\n  | where keyEvents.displayName =~ \"KeyDescription\"\r\n  | extend new_value_set = parse_json(tostring(keyEvents.newValue))\r\n  | extend old_value_set = parse_json(tostring(keyEvents.oldValue))\r\n  | where old_value_set == \"[]\"\r\n  | parse new_value_set with * \"KeyIdentifier=\" keyIdentifier:string \",KeyType=\" keyType:string \",KeyUsage=\" keyUsage:string \",DisplayName=\" keyDisplayName:string \"]\" *\r\n  | where keyUsage == \"Verify\"  or keyUsage == \"\"\r\n  | extend UserAgent = iff(AdditionalDetails[0].key == \"User-Agent\",tostring(AdditionalDetails[0].value),\"\")\r\n  | extend InitiatingUserOrApp = iff(isnotempty(InitiatedBy.user.userPrincipalName),tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\r\n  | extend InitiatingIpAddress = iff(isnotempty(InitiatedBy.user.ipAddress), tostring(InitiatedBy.user.ipAddress), tostring(InitiatedBy.app.ipAddress))\r\n  // The below line is currently commented out but Azure Sentinel users can modify this query to show only Application or only Service Principal events in their environment\r\n  //| where targetType =~ \"Application\" // or targetType =~ \"ServicePrincipal\"\r\n  | project-away new_value_set, old_value_set\r\n  | project-reorder TimeGenerated, OperationName, InitiatingUserOrApp, InitiatingIpAddress, UserAgent, targetDisplayName, targetId, targetType, keyDisplayName, keyType, keyUsage, keyIdentifier, CorrelationId, TenantId\r\n  | extend timestamp = TimeGenerated, AccountCustomEntity = InitiatingUserOrApp, IPCustomEntity = InitiatingIpAddress",
+        "size": 0,
+        "title": "First access credential added to Application or Service Principal where no credential was present",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  let OperationList = dynamic([\"Add member to role\",\"Add member to role in PIM requested (permanent)\"]);\r\n  let PrivilegedGroups = dynamic([\"UserAccountAdmins\",\"PrivilegedRoleAdmins\",\"TenantAdmins\"]);\r\n  AuditLogs  \r\n  | where LoggedByService =~ \"Core Directory\"\r\n  | where Category =~ \"RoleManagement\"\r\n  | where OperationName in~ (OperationList)\r\n  | mv-expand TargetResources\r\n  | extend modifiedProperties = parse_json(TargetResources).modifiedProperties\r\n  | mv-expand modifiedProperties\r\n  | extend DisplayName = tostring(parse_json(modifiedProperties).displayName), GroupName =  trim(@'\"',tostring(parse_json(modifiedProperties).newValue))\r\n  | extend AppId = tostring(parse_json(parse_json(InitiatedBy).app).appId), InitiatedByDisplayName = tostring(parse_json(parse_json(InitiatedBy).app).displayName), ServicePrincipalId = tostring(parse_json(parse_json(InitiatedBy).app).servicePrincipalId), ServicePrincipalName = tostring(parse_json(parse_json(InitiatedBy).app).servicePrincipalName)\r\n  | where DisplayName =~ \"Role.WellKnownObjectName\"\r\n  | where GroupName in~ (PrivilegedGroups)\r\n  // If you want to still alert for operations from PIM, remove below filtering for MS-PIM.\r\n  | where InitiatedByDisplayName != \"MS-PIM\"\r\n  | project TimeGenerated, AADOperationType, Category, OperationName, AADTenantId, AppId, InitiatedByDisplayName, ServicePrincipalId, ServicePrincipalName, DisplayName, GroupName\r\n  | extend timestamp = TimeGenerated, AccountCustomEntity = ServicePrincipalName",
+        "size": 0,
+        "title": "User added to Azure Active Directory Privileged Groups",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 4"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  AuditLogs  \r\n  | where LoggedByService =~ \"Core Directory\"\r\n  | where Category =~ \"ApplicationManagement\"\r\n  | where OperationName =~ \"Consent to application\"\r\n  | where TargetResources has \"offline\"\r\n  | extend AppDisplayName = TargetResources.[0].displayName\r\n  | extend AppClientId = tolower(TargetResources.[0].id)\r\n  | where AppClientId !in ((externaldata(knownAppClientId:string, knownAppDisplayName:string)[@\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Sample%20Data/Feeds/Microsoft.OAuth.KnownApplications.csv\"] with (format=\"csv\")))\r\n  | extend ConsentFull = TargetResources[0].modifiedProperties[4].newValue\r\n  | parse ConsentFull with * \"ConsentType: \" GrantConsentType \", Scope: \" GrantScope1 \"]\" *\r\n  | where ConsentFull contains \"offline_access\" and ConsentFull contains \"Files.Read\" or ConsentFull contains \"Mail.Read\" or ConsentFull contains \"Notes.Read\" or ConsentFull contains \"ChannelMessage.Read\" or ConsentFull contains \"Chat.Read\" or ConsentFull contains \"TeamsActivity.Read\" or ConsentFull contains \"Group.Read\" or ConsentFull contains \"EWS.AccessAsUser.All\" or ConsentFull contains \"EAS.AccessAsUser.All\"\r\n  | where GrantConsentType != \"AllPrincipals\" // NOTE: we are ignoring if OAuth application was granted to all users via an admin - but admin due diligence should be audited occasionally\r\n  | extend GrantIpAddress = tostring(iff(isnotempty(InitiatedBy.user.ipAddress), InitiatedBy.user.ipAddress, InitiatedBy.app.ipAddress))\r\n  | extend GrantInitiatedBy = tostring(iff(isnotempty(InitiatedBy.user.userPrincipalName),InitiatedBy.user.userPrincipalName, InitiatedBy.app.displayName))\r\n  | extend GrantUserAgent = tostring(iff(AdditionalDetails[0].key =~ \"User-Agent\", AdditionalDetails[0].value, \"\"))\r\n  | project TimeGenerated, GrantConsentType, GrantScope1, GrantInitiatedBy, AppDisplayName, GrantIpAddress, GrantUserAgent, AppClientId, OperationName, ConsentFull, CorrelationId\r\n  | join kind = leftouter (AuditLogs  \r\n  | where LoggedByService =~ \"Core Directory\"\r\n  | where Category =~ \"ApplicationManagement\"\r\n  | where OperationName =~ \"Add service principal\"\r\n  | extend AppClientId = tolower(TargetResources[0].id)\r\n  | extend AppReplyURLs = iff(TargetResources[0].modifiedProperties[1].newValue has \"AddressType\", TargetResources[0].modifiedProperties[1].newValue, \"\")\r\n  | distinct AppClientId, tostring(AppReplyURLs)\r\n  )\r\n  on AppClientId\r\n  | join kind = innerunique (AuditLogs  \r\n  | where LoggedByService =~ \"Core Directory\"\r\n  | where Category =~ \"ApplicationManagement\"\r\n  | where OperationName =~ \"Add OAuth2PermissionGrant\" or OperationName =~ \"Add delegated permission grant\"\r\n  | extend GrantAuthentication = tostring(TargetResources[0].displayName)\r\n  | extend GrantOperation = OperationName\r\n  | project GrantAuthentication, GrantOperation, CorrelationId\r\n  ) on CorrelationId\r\n  | project TimeGenerated, GrantConsentType, GrantScope1, GrantInitiatedBy, AppDisplayName, AppReplyURLs, GrantIpAddress, GrantUserAgent, AppClientId, GrantAuthentication, OperationName, GrantOperation, CorrelationId, ConsentFull\r\n  | extend timestamp = TimeGenerated, AccountCustomEntity = GrantInitiatedBy, IPCustomEntity = GrantIpAddress",
+        "size": 0,
+        "title": "Suspicious application consent for offline access",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  let createRoleAssignmentActivity = AzureActivity\r\n  | where OperationName == \"Create role assignment\";\r\n  createRoleAssignmentActivity   \r\n  | summarize count() by CallerIpAddress, Caller  \r\n  | join kind = rightanti ( \r\n  createRoleAssignmentActivity  \r\n  | summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated), ActivityTimeStamp = makelist(TimeGenerated), ActivityStatus = makelist(ActivityStatus), \r\n  OperationIds = makelist(OperationId), CorrelationId = makelist(CorrelationId), ActivityCountByCallerIPAddress = count()  \r\n  by ResourceId, CallerIpAddress, Caller, OperationName, Resource, ResourceGroup\r\n  ) on CallerIpAddress, Caller\r\n  | extend timestamp = StartTimeUtc, AccountCustomEntity = Caller, IPCustomEntity = CallerIpAddress",
+        "size": 0,
+        "title": "Suspicious granting of permissions to an account",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 6"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "  let szOperationNames = dynamic([\"Create or Update Virtual Machine\", \"Create Deployment\"]);\r\n  let RareCaller = AzureActivity  \r\n  | where OperationName in~ (szOperationNames)\r\n  | project ResourceGroup, Caller, OperationName, CallerIpAddress\r\n  | join kind=rightantisemi (\r\n  AzureActivity\r\n  | where OperationName in~ (szOperationNames)\r\n  | summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated), ActivityStatus = makeset(ActivityStatus), OperationIds = makeset(OperationId), CallerIpAddress = makeset(CallerIpAddress) \r\n  by ResourceId, Caller, OperationName, Resource, ResourceGroup\r\n  ) on Caller, ResourceGroup \r\n  | mvexpand CallerIpAddress\r\n  | where isnotempty(CallerIpAddress);\r\n  let Counts = RareCaller | summarize ActivityCountByCaller = count() by Caller;\r\n  RareCaller | join kind= inner (Counts) on Caller | project-away Caller1\r\n  | extend timestamp = StartTimeUtc, AccountCustomEntity = Caller, IPCustomEntity = tostring(CallerIpAddress)\r\n  | sort by ActivityCountByCaller desc nulls last ",
+        "size": 0,
+        "title": "Suspicious Resource deployment",
+        "timeContext": {
+          "durationMs": 7776000000
+        },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 7"
+    }
+  ],  
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
