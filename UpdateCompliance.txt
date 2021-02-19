@@ -79,7 +79,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
+        "json": "## Duckcreek - Update Compliance Workbook\n---\n\nThis Workbook is intended to report on Update Compliance."
       },
       "name": "text - 2"
     },
@@ -286,7 +286,7 @@
       },
       "name": "query - 7"
     }
-  ],
+  ],  
   "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
