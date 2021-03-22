@@ -1,0 +1,1538 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "b1f9cdb2-7931-481f-a5f8-8c93da87e221",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time Range",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 5184000000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 22"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'azuread_audit_parser'\r\nor QueryText contains 'azure_ad_signin_parser'\r\nor QueryText contains 'citrix_remote_parser'\r\nor QueryText contains 'crowdstrike_falcon_parser'\r\nor QueryText contains 'azure_ad_security_alerts_parser'\r\nor QueryText contains 'juniper_interface_parser'\r\nor QueryText contains 'juniper_reason_parser'\r\nor QueryText contains 'juniper_firewall_parser'\r\nor QueryText contains 'juniper_name_parser'\r\nor QueryText contains 'juniper_4logs_parser'\r\nor QueryText contains 'o365_email_parser'\r\nor QueryText contains 'pan_threat_parser'\r\nor QueryText contains 'pan_traffic_parser'\r\nor QueryText contains 'windows_access_parser'\r\nor QueryText contains 'pulse_remoteaccess_parser'\r\nor QueryText contains 'network_meta_parser'\r\nor QueryText contains 'normalized_network_parser'\r\nor QueryText contains 'windowsfw_normalized_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+        "size": 0,
+        "title": "Failures Over Last {TimeRange}",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeRange",
+        "timeBrushParameterName": "TimeBrushMain",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "timechart"
+      },
+      "name": "query - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'azuread_audit_CL'\r\nor Query contains 'azure_ad_signin_parser'\r\nor Query contains 'citrix_remote_parser'\r\nor Query contains 'crowdstrike_falcon_parser'\r\nor Query contains 'azure_ad_security_alerts_parser'\r\nor Query contains 'juniper_interface_parser'\r\nor Query contains 'juniper_reason_parser'\r\nor Query contains 'juniper_firewall_parser'\r\nor Query contains 'juniper_name_parser'\r\nor Query contains 'juniper_4logs_parser'\r\nor Query contains 'o365_email_parser'\r\nor Query contains 'pan_threat_parser'\r\nor Query contains 'pan_traffic_parser'\r\nor Query contains 'windows_access_parser'\r\nor Query contains 'pulse_remoteaccess_parser'\r\nor Query contains 'network_meta_parser'\r\nor Query contains 'normalized_network_parser'\r\nor Query contains 'windowsfw_normalized_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc\r\n",
+        "size": 0,
+        "title": "Failed Queries Between {TimeBrushMain}",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeBrushMain",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "gridSettings": {
+          "sortBy": [
+            {
+              "itemKey": "TimeGenerated",
+              "sortOrder": 1
+            }
+          ]
+        },
+        "sortBy": [
+          {
+            "itemKey": "TimeGenerated",
+            "sortOrder": 1
+          }
+        ]
+      },
+      "name": "query - 1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '20', \"Successful\", \"Failed\")\r\n| where QueryText contains 'azuread_audit_parser'\r\nor QueryText contains 'azure_ad_signin_parser'\r\nor QueryText contains 'citrix_remote_parser'\r\nor QueryText contains 'crowdstrike_falcon_parser'\r\nor QueryText contains 'azure_ad_security_alerts_parser'\r\nor QueryText contains 'juniper_interface_parser'\r\nor QueryText contains 'juniper_reason_parser'\r\nor QueryText contains 'juniper_firewall_parser'\r\nor QueryText contains 'juniper_name_parser'\r\nor QueryText contains 'juniper_4logs_parser'\r\nor QueryText contains 'o365_email_parser'\r\nor QueryText contains 'pan_threat_parser'\r\nor QueryText contains 'pan_traffic_parser'\r\nor QueryText contains 'windows_access_parser'\r\nor QueryText contains 'pulse_remoteaccess_parser'\r\nor QueryText contains 'network_meta_parser'\r\nor QueryText contains 'normalized_network_parser'\r\nor QueryText contains 'windowsfw_normalized_parser'\r\n| summarize count() by Response",
+        "size": 0,
+        "title": "Overall Successful vs. Failed Between {TimeBrushMain}",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeBrushMain",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "customWidth": "25",
+      "name": "query - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| where QueryText contains 'azuread_audit_CL'\r\nor QueryText contains 'azure_ad_signin_parser'\r\nor QueryText contains 'citrix_remote_parser'\r\nor QueryText contains 'crowdstrike_falcon_parser'\r\nor QueryText contains 'azure_ad_security_alerts_parser'\r\nor QueryText contains 'juniper_interface_parser'\r\nor QueryText contains 'juniper_reason_parser'\r\nor QueryText contains 'juniper_firewall_parser'\r\nor QueryText contains 'juniper_name_parser'\r\nor QueryText contains 'juniper_4logs_parser'\r\nor QueryText contains 'o365_email_parser'\r\nor QueryText contains 'pan_threat_parser'\r\nor QueryText contains 'pan_traffic_parser'\r\nor QueryText contains 'windows_access_parser'\r\nor QueryText contains 'pulse_remoteaccess_parser'\r\nor QueryText contains 'network_meta_parser'\r\nor QueryText contains 'normalized_network_parser'\r\nor QueryText contains 'windowsfw_normalized_parser'\r\n| extend Category =  case(QueryText contains 'azuread_audit_CL', 'AAD',\r\nQueryText contains 'azure_ad_signin_parser', 'AAD',\r\nQueryText contains 'citrix_remote_parser', 'Endpoint',\r\nQueryText contains 'crowdstrike_falcon_parser', 'Endpoint',\r\nQueryText contains 'azure_ad_security_alerts_parser', 'AAD',\r\nQueryText contains 'juniper_interface_parser', 'Network',\r\nQueryText contains 'juniper_reason_parser', 'Network',\r\nQueryText contains 'juniper_firewall_parser', 'Network',\r\nQueryText contains 'juniper_name_parser', 'Network',\r\nQueryText contains 'juniper_4logs_parser', 'Network',\r\nQueryText contains 'o365_email_parser', 'Office',\r\nQueryText contains 'pan_threat_parser', 'Network',\r\nQueryText contains 'pan_traffic_parser', 'Network',\r\nQueryText contains 'windows_access_parser', 'Network',\r\nQueryText contains 'pulse_remoteaccess_parser', 'Network',\r\nQueryText contains 'network_meta_parser', 'Network',\r\nQueryText contains 'normalized_network_parser', 'Network',\r\nQueryText contains 'windowsfw_normalized_parser', 'Network',\r\n'No Category')\r\n| project Category\r\n| summarize count() by Category\r\n",
+        "size": 0,
+        "title": "Categorized Parser Failures {TimeBrushMain}",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "TimeBrushMain",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart"
+      },
+      "customWidth": "75",
+      "name": "query - 3"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "e155e26e-4202-4a65-b884-7c8eb9808e21",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Azure AD Audit",
+            "subTarget": "AADAudit",
+            "preText": "",
+            "style": "link"
+          },
+          {
+            "id": "bcb7a561-e2d7-460d-bb01-e1c3ff2c32c9",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Azure AD Signin",
+            "subTarget": "AADSignin",
+            "style": "link"
+          },
+          {
+            "id": "80210e87-a5cf-41f4-80ac-ee0f320110af",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Remote Access",
+            "subTarget": "Remote",
+            "style": "link"
+          },
+          {
+            "id": "b01cb425-392a-4e3b-944d-dc87a43c7859",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Expand Crowdstrike",
+            "subTarget": "EXCR",
+            "style": "link"
+          },
+          {
+            "id": "92dbd72c-8897-4dbc-b58c-f4d9c336a8d6",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "AAD Secalerts",
+            "subTarget": "SEC",
+            "style": "link"
+          },
+          {
+            "id": "0ae915b6-1f44-43ee-937b-17d9a553c706",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Juniper Interface",
+            "subTarget": "JNPI",
+            "style": "link"
+          },
+          {
+            "id": "1e251d0b-f16b-477f-b2cf-b0763e9d5f3d",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Juniper Reason",
+            "subTarget": "JNPR",
+            "style": "link"
+          },
+          {
+            "id": "985d49e4-66c4-4eaf-b5d0-5b8cbe95db48",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Juniper Firewall",
+            "subTarget": "JNPF",
+            "style": "link"
+          },
+          {
+            "id": "3cdc4573-e934-462a-9523-5abfddd29b66",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Juniper Name",
+            "subTarget": "JNPN",
+            "style": "link"
+          },
+          {
+            "id": "3e40ba1b-a435-4503-bfdb-7c64058f72ea",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "O365 Email",
+            "subTarget": "O365",
+            "style": "link"
+          },
+          {
+            "id": "5f66bc92-d620-4d1f-9920-e904fc0efa7f",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Pan Threat",
+            "subTarget": "PANTh",
+            "style": "link"
+          },
+          {
+            "id": "e5f92070-220d-489d-a018-a2b2f1691e08",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Pan Traffic",
+            "subTarget": "PANTr",
+            "style": "link"
+          },
+          {
+            "id": "207f9654-06f0-49da-93b0-b804101e561b",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "WIndows Access",
+            "subTarget": "WIN",
+            "style": "link"
+          },
+          {
+            "id": "74ba7904-3ce7-46f1-b2f1-ca0957aad66a",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Windows Logoff",
+            "subTarget": "WLO",
+            "style": "link"
+          },
+          {
+            "id": "cf025175-113d-460d-90f6-b95198725c89",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Windows Filtering Platform",
+            "subTarget": "FW",
+            "style": "link"
+          },
+          {
+            "id": "e62ca74c-b3a6-47e9-acce-df143bf40f53",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Windows User Creation",
+            "subTarget": "WUC",
+            "style": "link"
+          },
+          {
+            "id": "5bbebd1d-7bc5-4b25-b68f-87979acd32cb",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Windows Network",
+            "subTarget": "WNet",
+            "style": "link"
+          },
+          {
+            "id": "8fb3bcf4-20cb-4423-af12-1063573619da",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Pulse Connect",
+            "subTarget": "PC",
+            "style": "link"
+          },
+          {
+            "id": "23512330-e1ae-445c-bd74-6ee4b0849eaa",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Network Meta",
+            "subTarget": "NM",
+            "style": "link"
+          },
+          {
+            "id": "9aaa42e3-57f0-46a5-aa18-ddc39203613f",
+            "cellValue": "Tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Normalized Network",
+            "subTarget": "NN",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 4"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'azuread_audit_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed AAD Audit Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 5184000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'azuread_audit_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed Between {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let parser = 'azuread_audit_parser';\r\nLAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains parser\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Logs Within Between {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 5"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "AADAudit"
+      },
+      "name": "AADA"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'azure_ad_signin_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over {TimeRange}",
+              "timeContext": {
+                "durationMs": 5184000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'azure_ad_signin_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Succssful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'azure_ad_signin_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 0"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "AADSignin"
+      },
+      "name": "AADS"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'citrix_remote_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '20', \"Successful\", \"Failed\")\r\n| where QueryText contains 'citrix_remote_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'citrix_remote_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "Remote"
+      },
+      "name": "RMAC"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'crowdstrike_falcon_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 172800000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'crowdstrike_falcon_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'cloudstrike_falcon_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 0"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "EXCR"
+      },
+      "name": "ExCrwd"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'o365_email_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'o365_email_parser'\r\n| summarize count() by Response\r\n",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'o365_email_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 0"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "SEC"
+      },
+      "name": "AADSec"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'juniper_interface_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 5184000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'juniper_interface_parser'\r\n| summarize count() by Response\r\n",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 86400000,
+                "endTime": "2021-02-04T00:00:00.000Z"
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'juniper_interface_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 86400000,
+                "endTime": "2021-02-04T00:00:00.000Z"
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "JNPI"
+      },
+      "name": "JNPI"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'juniper_reason_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)\r\n",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 5184000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'juniper_reason_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 86400000,
+                "endTime": "2021-02-04T00:00:00.000Z"
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'juniper_reason_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "JNPR"
+      },
+      "name": "JNPR"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'juniper_firewall_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'juniper_firewall_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'juniper_firewall_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc\r\n",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "JNPF"
+      },
+      "name": "JNPF"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'juniper_name_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'azuread_audit_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 86400000,
+                "endTime": "2021-02-04T00:00:00.000Z"
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "timeBrushParameterName": "TimeBrush",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 23"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'juniper_name_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 86400000,
+                "endTime": "2021-02-04T00:00:00.000Z"
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 24"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "JNPN"
+      },
+      "name": "JNPN"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'o365_email_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '20', \"Successful\", \"Failed\")\r\n| where QueryText contains 'o365_email_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'o365_email_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc\r\n",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "O365"
+      },
+      "name": "O365"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'pan_traffic_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'pan_traffic_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'pan_traffic_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "PANTr"
+      },
+      "name": "PANTr"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'pan_threat_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "showAnnotations": true,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'pan_threat_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'pan_threat_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "PANTh"
+      },
+      "name": "PANTr"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'windows_access_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 5184000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '20', \"Successful\", \"Failed\")\r\n| where QueryText contains 'windows_access_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'windows_access_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "WIN"
+      },
+      "name": "WINACC"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'pulse_remoteaccess_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'pulse_remoteaccess_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'pulse_remoteaccess_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "PC"
+      },
+      "name": "PC"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'network_meta_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'network_meta_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'network_meta_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "NM"
+      },
+      "name": "NetMeta"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'normalized_network_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "timeBrushParameterName": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'normalized_network_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'normalized_network_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeBrush",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "NN"
+      },
+      "name": "NetNorm"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains '20'\r\n| where QueryText contains 'windows_fw_normalized_parser'\r\n| summarize count() by tostring(ResponseCode), bin(TimeGenerated, 1d)\r\n",
+              "size": 0,
+              "title": "Failed Runs Over Last {TimeRange}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart"
+            },
+            "customWidth": "75",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| extend Response = iff(tostring(ResponseCode) contains '200', \"Successful\", \"Failed\")\r\n| where QueryText contains 'windows_fw_normalized_parser'\r\n| summarize count() by Response",
+              "size": 0,
+              "title": "Successful vs. Failed {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart"
+            },
+            "customWidth": "25",
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "LAQueryLogs\r\n| where tostring(ResponseCode) !contains \"20\"\r\n| extend Query = case(QueryText contains \"set query_take_max\", substring(QueryText, 64, 20000),\r\n                    QueryText contains \"let NumberOfTypesToPresent\", substring(QueryText, 117, 20000),\r\n                    QueryText)\r\n| where Query contains 'windows_fw_normalized_parser'\r\n| project TimeGenerated, Query, ResponseCode, AADEmail, RequestTarget, QueryTimeRangeStart, QueryTimeRangeEnd\r\n| sort by TimeGenerated desc",
+              "size": 0,
+              "title": "Failed Runs {TimeBrush}",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "FW"
+      },
+      "name": "FW"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "WLO"
+      },
+      "name": "WLO"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "WNet"
+      },
+      "name": "WNet"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "Tab",
+        "comparison": "isEqualTo",
+        "value": "WUC"
+      },
+      "name": "WUC"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/1c252cf0-2140-4605-8501-932fcc039e0a/resourcegroups/sentinel/providers/microsoft.operationalinsights/workspaces/nyc3-sentinel"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
