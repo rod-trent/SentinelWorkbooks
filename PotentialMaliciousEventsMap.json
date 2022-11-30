@@ -1,0 +1,48 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## New workbook\n---\n\nWelcome to your new workbook.  This area will display text formatted as markdown.\n\n\nWe've included a basic analytics query to get you started. Use the `Edit` button below each section to configure it or add more sections."
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "//This is the query that produces the Potential Malicious Events map on the entry page for Microsoft Sentinel\r\n\r\nunion isfuzzy=true\r\n    (W3CIISLog\r\n    | extend\r\n        TrafficDirection = \"InboundOrUnknown\",\r\n        Country=RemoteIPCountry,\r\n        Latitude=RemoteIPLatitude,\r\n        Longitude=RemoteIPLongitude),\r\n    (DnsEvents\r\n    | extend\r\n        TrafficDirection = \"InboundOrUnknown\",\r\n        Country= RemoteIPCountry,\r\n        Latitude = RemoteIPLatitude,\r\n        Longitude = RemoteIPLongitude),\r\n    (WireData\r\n    | extend\r\n        TrafficDirection = iff(Direction != \"Outbound\", \"InboundOrUnknown\", \"Outbound\"),\r\n        Country=RemoteIPCountry,\r\n        Latitude=RemoteIPLatitude,\r\n        Longitude=RemoteIPLongitude),\r\n    (WindowsFirewall\r\n    | extend\r\n        TrafficDirection = iff(CommunicationDirection != \"SEND\", \"InboundOrUnknown\", \"Outbound\"),\r\n        Country=MaliciousIPCountry,\r\n        Latitude=MaliciousIPLatitude,\r\n        Longitude=MaliciousIPLongitude),\r\n    (CommonSecurityLog\r\n    | extend\r\n        TrafficDirection = iff(CommunicationDirection !in (\"Outbound\", \"1\"), \"InboundOrUnknown\", \"Outbound\"),\r\n        Country=MaliciousIPCountry,\r\n        Latitude=MaliciousIPLatitude,\r\n        Longitude=MaliciousIPLongitude,\r\n        Confidence=ThreatDescription,\r\n        Description=ThreatDescription),\r\n    (VMConnection\r\n    | where Type == \"VMConnection\"\r\n    | extend\r\n        TrafficDirection = iff(Direction != \"outbound\", \"InboundOrUnknown\", \"Outbound\"),\r\n        Country=RemoteCountry,\r\n        Latitude=RemoteLatitude,\r\n        Longitude=RemoteLongitude,\r\n        MaliciousIP=MaliciousIp)\r\n| where isnotempty(MaliciousIP)\r\n    and isnotempty(Country)\r\n    and isnotempty(Latitude)\r\n    and isnotempty(Longitude)",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "map",
+        "mapSettings": {
+          "locInfo": "CountryRegion",
+          "locInfoColumn": "Country",
+          "latitude": "DestinationTranslatedAddress",
+          "longitude": "CommunicationDirection",
+          "sizeSettings": "BytesReceived",
+          "sizeAggregation": "Count",
+          "legendMetric": "FileOffset",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "BytesReceived",
+            "colorAggregation": "Count",
+            "type": "heatmap",
+            "heatmapPalette": "greenRed"
+          }
+        }
+      },
+      "name": "query - 2"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourcegroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
