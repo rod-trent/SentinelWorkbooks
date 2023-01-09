@@ -1,4 +1,4 @@
-//Shows all tables with data and allows multi-selecting sources to show combined total cost
+//A Workbook that shows all tables with data and allows multi-selecting sources to show combined total cost
 
 {
   "version": "Notebook/1.0",
